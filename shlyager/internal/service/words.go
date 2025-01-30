@@ -43,14 +43,14 @@ func (s *Service) CreateWords(c echo.Context) error {
 }
 
 // Функция удаления слов с БД
-func (s *Service) DeleteWords(c echo.Context) error {
+func (s *Service) DeleteWord(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		s.logger.Error(err)
 		return c.JSON(s.NewError(InvalidParams))
 	}
 	repo := s.wordsRepo
-	err = repo.RDeleteWords(id)
+	err = repo.RDeleteWord(id)
 	if err != nil {
 		s.logger.Error(err)
 		return c.JSON(s.NewError(InternalServerError))
@@ -59,7 +59,7 @@ func (s *Service) DeleteWords(c echo.Context) error {
 }
 
 // Функция обновления слов в базе
-func (s *Service) UpdateWords(c echo.Context) error {
+func (s *Service) UpdateWord(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		s.logger.Error(err)
@@ -69,7 +69,7 @@ func (s *Service) UpdateWords(c echo.Context) error {
 	err = c.Bind(&wordSlice)
 	repo := s.wordsRepo
 	for _, word := range wordSlice {
-		err = repo.RUpdateWords(word.Title, word.Translation, id)
+		err = repo.RUpdateWord(word.Title, word.Translation, id)
 	}
 	if err != nil {
 		s.logger.Error(err)

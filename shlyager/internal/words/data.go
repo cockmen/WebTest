@@ -29,7 +29,7 @@ func (r *Repo) CreateNewWords(word, translate string) error {
 	return nil
 }
 
-func (r *Repo) RDeleteWords(id int) error {
+func (r *Repo) RDeleteWord(id int) error {
 	_, err := r.db.Exec(`DELETE FROM ru_en WHERE id=$1`, id)
 	if err != nil {
 		return err
@@ -38,7 +38,7 @@ func (r *Repo) RDeleteWords(id int) error {
 	return nil
 }
 
-func (r *Repo) RUpdateWords(title, translate string, id int) error {
+func (r *Repo) RUpdateWord(title, translate string, id int) error {
 	_, err := r.db.Exec(`UPDATE ru_en SET title=$1, translation=$2 WHERE id=$3 `, title, translate, id)
 	if err != nil {
 		return err
