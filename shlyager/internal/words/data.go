@@ -1,6 +1,9 @@
 package words
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 type Repo struct {
 	db *sql.DB
@@ -45,4 +48,27 @@ func (r *Repo) RUpdateWord(title, translate string, id int) error {
 	}
 
 	return nil
+}
+
+// Функция умного поиска слов
+func (r *Repo) RSmartSearch(title string) ([]Word, error) {
+	rows, err := r.db.Query(`SELECT id, title, translation AS similarity FROM ru_en WHERE word_similarity(title, $1)>0.1 ORDER BY similarity DESC LIMIT 100`, title)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var words []Word
+	for rows.Next() {
+		var w Word
+		if err := rows.Scan(&w.Id, &w.Title, &w.Translation); err != nil {
+			return nil, err
+		}
+		words = append(words, w)
+	}
+	if len(words) == 0 {
+		return nil, fmt.Errorf("no similar words found")
+	}
+	return words, nil
+
 }

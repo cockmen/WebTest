@@ -20,12 +20,13 @@ func main() {
 
 	api.GET("/word/:id", svc.GetWordById)
 	api.POST("/words", svc.CreateWords)
-	api.DELETE("/remove/:id", svc.DeleteWord)
-	api.PUT("/update/:id", svc.UpdateWord)
+	api.DELETE("/word/delete/:id", svc.DeleteWord)
+	api.PUT("/word/update/:id", svc.UpdateWord)
 	api.GET("/report/:id", svc.GetReportById)
-	api.POST("/reports", svc.CreareNewReport)
-	api.DELETE("/remove_report/:id", svc.DeleteReport)
-	api.PUT("/update_report/:id", svc.UpdateReport)
+	api.POST("/reports", svc.CreateNewReport)
+	api.DELETE("/report/delete/:id", svc.DeleteReport)
+	api.PUT("/report/update/:id", svc.UpdateReport)
+	api.GET("/search/ru", svc.SmartSearch)
 
 	router.Logger.Fatal(router.Start(":1323"))
 }

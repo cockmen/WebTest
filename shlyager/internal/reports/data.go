@@ -1,6 +1,9 @@
 package reports
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 type Repo struct {
 	db *sql.DB
@@ -12,7 +15,7 @@ func NewRepo(db *sql.DB) *Repo {
 
 func (r *Repo) RGetReportById(id int) (*Report, error) {
 	var report Report
-	err := r.db.QueryRow(`SELECT id, title, descriptions, created_at, updated_at from rep_db WHERE id=$1`, id).
+	err := r.db.QueryRow(`SELECT id, title, descriptions, created_at, updated_at FROM reports WHERE id=$1`, id).
 		Scan(&report.Id, &report.Title, &report.Description, &report.Created, &report.Updated)
 	if err != nil {
 		return nil, err
@@ -21,7 +24,7 @@ func (r *Repo) RGetReportById(id int) (*Report, error) {
 }
 
 func (r *Repo) RCreateNewReport(title, description string) error {
-	_, err := r.db.Exec(`INSERT INTO rep_db (title, descriptions) VALUES ($1, $2)`, title, description)
+	_, err := r.db.Exec(`INSERT INTO reports (title, descriptions, created_at, updated_at) VALUES ($1, $2, $3, $4)`, title, description, time.Now(), time.Now())
 	if err != nil {
 		return err
 	}
@@ -29,7 +32,7 @@ func (r *Repo) RCreateNewReport(title, description string) error {
 }
 
 func (r *Repo) RDeleteReport(id int) error {
-	_, err := r.db.Exec(`DELETE FROM rep_db WHERE id=$1`, id)
+	_, err := r.db.Exec(`DELETE FROM reports WHERE id=$1`, id)
 	if err != nil {
 		return err
 	}
@@ -37,7 +40,7 @@ func (r *Repo) RDeleteReport(id int) error {
 }
 
 func (r *Repo) RUpdateReport(title, description string, id int) error {
-	_, err := r.db.Exec(`UPDATE rep_db SET title = $1, descriptions = $2 WHERE id =$3`, title, description, id)
+	_, err := r.db.Exec(`UPDATE reports SET title = $1, descriptions = $2, updated_at = $4 WHERE id =$3 `, title, description, id, time.Now())
 	if err != nil {
 		return err
 	}

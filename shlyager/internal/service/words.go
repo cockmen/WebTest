@@ -77,3 +77,22 @@ func (s *Service) UpdateWord(c echo.Context) error {
 	}
 	return c.String(http.StatusOK, "Updated")
 }
+
+// Функция умного поиска слов
+func (s *Service) SmartSearch(c echo.Context) error {
+	title := c.QueryParams().Get("title")
+	if title == "" {
+		s.logger.Error("Missing 'title' query parameter")
+		return c.JSON(s.NewError(InvalidParams))
+	}
+	word := Word{
+		Title: title,
+	}
+	repo := s.wordsRepo
+	result, err := repo.RSmartSearch(word.Title)
+	if err != nil {
+		s.logger.Error(err)
+		return c.JSON(s.NewError(InternalServerError))
+	}
+	return c.JSON(http.StatusOK, Response{Object: result})
+}

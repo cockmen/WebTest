@@ -22,17 +22,15 @@ func (s *Service) GetReportById(c echo.Context) error {
 	return c.JSON(http.StatusOK, Response{Object: report})
 }
 
-func (s *Service) CreareNewReport(c echo.Context) error {
-	var reportSlice []Report
-	err := c.Bind(&reportSlice)
+func (s *Service) CreateNewReport(c echo.Context) error {
+	var report Report
+	err := c.Bind(&report)
 	if err != nil {
 		s.logger.Error(err)
 		return c.JSON(s.NewError(InvalidParams))
 	}
 	repo := s.reportsRepo
-	for _, report := range reportSlice {
-		err = repo.RCreateNewReport(report.Title, report.Description)
-	}
+	err = repo.RCreateNewReport(report.Title, report.Description)
 	if err != nil {
 		s.logger.Error(err)
 		return c.JSON(s.NewError(InternalServerError))
@@ -61,12 +59,10 @@ func (s *Service) UpdateReport(c echo.Context) error {
 		s.logger.Error(err)
 		return c.JSON(s.NewError(InvalidParams))
 	}
-	var reportSlice []Report
-	err = c.Bind(&reportSlice)
+	var report Report
+	err = c.Bind(&report)
 	repo := s.reportsRepo
-	for _, report := range reportSlice {
-		err = repo.RUpdateReport(report.Title, report.Description, id)
-	}
+	err = repo.RUpdateReport(report.Title, report.Description, id)
 	if err != nil {
 		s.logger.Error(err)
 		return c.JSON(s.NewError(InternalServerError))
